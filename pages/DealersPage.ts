@@ -4,13 +4,13 @@ export class DealersPage {
     private page: Page;
 
     // Locators
-    readonly pageHeading         = () => this.page.locator('h1').filter({ hasText: 'Car Dealers and Showrooms' });
-    readonly cityInput           = () => this.page.locator('#dealer_city');
-    readonly makeDropdown        = () => this.page.locator('#dealer_make');
-    readonly searchButton        = () => this.page.locator('button.btn-p');
-    readonly brandSlider         = () => this.page.locator('#zwn-brandslider');
-    readonly trendingSection     = () => this.page.locator('#trending');
-    readonly trendingCards       = () => this.page.locator('#similarSlider li.sl-card');
+    // private pageHeading         = () => this.page.locator('h1').filter({ hasText: 'Car Dealers and Showrooms' });
+    // private cityInput           = () => this.page.locator('#dealer_city');
+    // private makeDropdown        = () => this.page.locator('#dealer_make');
+    // private searchButton        = () => this.page.locator('button.btn-p');
+    private brandSlider         = () => this.page.locator('#zwn-brandslider');
+    private trendingSection     = () => this.page.locator('#trending');
+    private trendingCards       = () => this.page.locator('#similarSlider li.sl-card');
 
     constructor(page: Page) {
         this.page = page;
@@ -23,30 +23,30 @@ export class DealersPage {
 
     // TC_01: Page load verification
     async verifyPageLoaded() {
-        await expect(this.pageHeading()).toBeVisible();
+        await expect(this.page.locator('h1').filter({ hasText: 'Car Dealers and Showrooms' })).toBeVisible();
         await expect(this.page).toHaveTitle(/Car Dealers/i);
     }
 
     // TC_02: Search with city + brand
     async searchShowrooms(city: string, make?: string) {
-        await this.cityInput().fill(city);
+        await this.page.locator('#dealer_city').fill(city);
 
         // trigger city validation + make load
-        await this.cityInput().blur();
+        await this.page.locator('#dealer_city').blur();
 
         if (make) {
             await this.page.waitForTimeout(1500); // wait for makes to populate dynamically
-            await this.makeDropdown().selectOption({ label: make });
+            await  this.page.locator('#dealer_make').selectOption({ label: make });
         }
-        await this.searchButton().click();
+        await this.page.locator('button.btn-p').click();
     }
 
     // TC_03: Search with only city
     async searchByCity(city: string) {
-        await this.cityInput().fill(city);
-        await this.cityInput().blur();
+        await this.page.locator('#dealer_city').fill(city);
+        await this.page.locator('#dealer_city').blur();
         await this.page.waitForTimeout(500);
-        await this.searchButton().click();
+        await this.page.locator('button.btn-p').click();
     }
 
     // TC_04: Click a top city link
